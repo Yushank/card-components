@@ -31,7 +31,7 @@ export const WorkoutCard = () => {
           recents
         </p>
         <div className="flex flex-col gap-2 h-15 w-full overflow-hidden">
-          {notes.map((note, i) => (
+          {notes.slice(-2).map((note, i) => (
             <p
               className="flex text-sm font-helvetica font-light text-gray-900"
               key={i}
