@@ -1,11 +1,12 @@
 "use client";
 
-import { Dot } from "lucide-react";
+import { Dot, SquareArrowDown, SquareArrowUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 export const WorkoutCard = () => {
   const [notes, setNotes] = useState<string[]>([]);
   const [input, setInput] = useState("");
+  const [isMenuActive, setIsMenuActive] = useState(false);
 
   function addNotes() {
     if (!input.trim()) return; //no input then return
@@ -13,54 +14,95 @@ export const WorkoutCard = () => {
     setInput(""); //clear input
   }
 
+  function dropMenu() {
+    setIsMenuActive(!isMenuActive);
+  }
+
   // useEffect(() => {
 
   // }, [notes])
   return (
-    <div className="flex flex-col items-center bg-gray-50 border border-black rounded-lg h-80 w-60 p-2">
-      {/* HEADING */}
-      <div className="p-2 w-full">
-        <p className="text-2xl font-helvetica font-medium text-gray-900">
-          Short Notes
-        </p>
-      </div>
-
-      {/* RECENT NOTES */}
-      <div className="flex flex-col gap-4 p-4 w-full">
-        <p className="text-sm font-helvetica font-light text-gray-400">
-          recents
-        </p>
-        <div className="flex flex-col gap-2 h-15 w-full overflow-hidden">
-          {notes.slice(-2).map((note, i) => (
-            <p
-              className="flex text-sm font-helvetica font-light text-gray-900"
-              key={i}
-            >
-              <Dot /> <span className="truncate">{note}</span>
+    <div>
+      {/* Menu is not active */}
+      {!isMenuActive ? (
+        <div className="flex flex-col items-center bg-gray-50 border border-black rounded-lg h-80 w-60 p-2">
+          {/* HEADING */}
+          <div className="p-2 w-full flex justify-between">
+            <p className="text-2xl font-helvetica font-medium text-gray-900">
+              Short Notes
             </p>
-          ))}
-        </div>
-      </div>
+            <SquareArrowDown
+              className="w-4 h-4 cursor-pointer"
+              onClick={dropMenu}
+            />
+          </div>
 
-      {/* INPUT BOX */}
-      <div className="flex flex-col items-center border rounded-xl h-30 w-50">
-        <input
-          className="border rounded-lg h-15 w-45 m-2 p-1"
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") addNotes();
-          }}
-          placeholder="I need to do..."
-        ></input>
-        <button
-          className="rounded-lg w-45 h-7 bg-gray-900 text-gray-50 mt-1 border cursor-pointer"
-          onClick={addNotes}
-        >
-          Add note
-        </button>
-      </div>
+          {/* RECENT NOTES */}
+          <div className="flex flex-col gap-4 p-4 w-full">
+            <p className="text-sm font-helvetica font-light text-gray-400">
+              recents
+            </p>
+            <div className="flex flex-col gap-2 h-15 w-full overflow-hidden">
+              {notes.slice(-2).map((note, i) => (
+                <p
+                  className="flex text-sm font-helvetica font-light text-gray-900"
+                  key={i}
+                >
+                  <Dot className="text-gray-900" />{" "}
+                  <span className="truncate">{note}</span>
+                </p>
+              ))}
+            </div>
+          </div>
+
+          {/* INPUT BOX */}
+          <div className="flex flex-col items-center border rounded-xl h-30 w-50">
+            <input
+              className="border rounded-lg h-15 w-45 m-2 p-1"
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") addNotes();
+              }}
+              placeholder="I need to do..."
+            ></input>
+            <button
+              className="rounded-lg w-45 h-7 bg-gray-900 text-gray-50 mt-1 border cursor-pointer"
+              onClick={addNotes}
+            >
+              Add note
+            </button>
+          </div>
+        </div>
+      ) : (
+        //Menu is active
+        <div className="flex flex-col items-center bg-gray-900 border border-black rounded-lg h-80 w-60 p-2">
+          {/* HEADING */}
+          <div className="p-2 w-full flex justify-between">
+            <p className="text-2xl font-helvetica font-medium text-gray-50">
+              Short Notes
+            </p>
+            <SquareArrowUp
+              className="w-4 h-4 text-gray-50 cursor-pointer"
+              onClick={dropMenu}
+            />
+          </div>
+
+          {/* NOTES */}
+          <div className="flex flex-col gap-4 p-4 w-full">
+            {notes.map((note, i) => (
+              <p
+                className="flex text-sm font-helvetica font-light text-gray-100"
+                key={i}
+              >
+                <Dot className="text-gray-100" />{" "}
+                <span className="truncate">{note}</span>
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
