@@ -1,12 +1,13 @@
 "use client";
 
-import { Dot, SquareArrowDown, SquareArrowUp } from "lucide-react";
+import { CircleX, Dot, SquareArrowDown, SquareArrowUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 export const WorkoutCard = () => {
   const [notes, setNotes] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [isMenuActive, setIsMenuActive] = useState(false);
+  const [isHovered, setIsHovered] = useState<number | null>(null);
 
   function addNotes() {
     if (!input.trim()) return; //no input then return
@@ -16,6 +17,10 @@ export const WorkoutCard = () => {
 
   function dropMenu() {
     setIsMenuActive(!isMenuActive);
+  }
+
+  function deleteNote(index: number) {
+    setNotes(notes.toSpliced(index, 1));
   }
 
   // useEffect(() => {
@@ -48,8 +53,8 @@ export const WorkoutCard = () => {
                   className="flex text-sm font-helvetica font-light text-gray-900"
                   key={i}
                 >
-                  <Dot className="text-gray-900" />{" "}
-                  <span className="truncate">{note}</span>
+                  <Dot className="text-gray-900 shrink-0" />{" "}
+                  <span className="truncate min-w-0">{note}</span>
                 </p>
               ))}
             </div>
@@ -90,15 +95,27 @@ export const WorkoutCard = () => {
           </div>
 
           {/* NOTES */}
-          <div className="flex flex-col gap-4 p-4 w-full">
+          <div className="flex flex-col overflow-x-hidden gap-4 p-4 w-full">
             {notes.map((note, i) => (
-              <p
-                className="flex text-sm font-helvetica font-light text-gray-100"
+              <div
+                className="flex items-center relative"
                 key={i}
+                onMouseEnter={() => setIsHovered(i)}
+                onMouseLeave={() => setIsHovered(null)}
               >
-                <Dot className="text-gray-100" />{" "}
-                <span className="truncate">{note}</span>
-              </p>
+                {/* <p className="flex items-center text-sm font-helvetica font-light text-gray-100 truncate z-0"> */}
+                <Dot className="text-gray-100 shrink-0" />
+                <span className="truncate min-w-0 flex-1 text-sm font-helvetica font-light text-gray-100">
+                  {note}
+                </span>
+                {/* </p> */}
+                {isHovered === i && (
+                  <CircleX
+                    className="text-gray-300 cursor-pointer"
+                    onClick={() => deleteNote(i)}
+                  />
+                )}
+              </div>
             ))}
           </div>
         </div>
