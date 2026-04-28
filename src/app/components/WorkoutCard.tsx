@@ -162,9 +162,9 @@ export const WorkoutCard = () => {
               className="text-gray-100 cursor-pointer"
               onClick={() => setIsNoteOpen(false)}
             />
-            <div className="flex flex-col gap-10 pt-8">
+            <div className="flex flex-col gap-10 pt-8 overflow-hidden">
               {/* note text */}
-              <p className="text-gray-100 text-xl">
+              <p className="text-gray-100 text-xl wrap-break-word overflow-hidden">
                 {openedNote !== null ? notes[openedNote].text : ""}
               </p>
               {/* note date */}
