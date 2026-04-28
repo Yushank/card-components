@@ -36,9 +36,26 @@ export const WorkoutCard = () => {
     setOpenedNote(index);
   }
 
-  // useEffect(() => {
+  //load notes from loaclstorage on first render
+  useEffect(() => {
+    const saved = localStorage.getItem("short-notes");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const restored = parsed.map(
+        (note: { text: string; createdAt: string }) => ({
+          ...note,
+          createdAt: new Date(note.createdAt),
+        }),
+      );
+      setNotes(restored);
+    }
+  }, []);
 
-  // }, [notes])
+  //Save each notes when created to localstorage
+  useEffect(() => {
+    localStorage.setItem("short-notes", JSON.stringify(notes));
+  }, [notes]); //whenever changes in notes happen it saves
+
   return (
     <div>
       {/* Menu is not active */}
