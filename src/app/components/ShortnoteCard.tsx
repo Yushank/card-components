@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-export const WorkoutCard = () => {
+export const ShortnoteCard = () => {
   const [notes, setNotes] = useState<{ text: string; createdAt: Date }[]>([]);
   const [input, setInput] = useState("");
   const [isMenuActive, setIsMenuActive] = useState(false);
