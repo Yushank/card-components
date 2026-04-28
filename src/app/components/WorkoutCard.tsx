@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 
 export const WorkoutCard = () => {
-  const [notes, setNotes] = useState<string[]>([]);
+  const [notes, setNotes] = useState<{ text: string; createdAt: Date }[]>([]);
   const [input, setInput] = useState("");
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [isHovered, setIsHovered] = useState<number | null>(null);
@@ -19,7 +19,7 @@ export const WorkoutCard = () => {
 
   function addNotes() {
     if (!input.trim()) return; //no input then return
-    setNotes((prev) => [...prev, input]);
+    setNotes((prev) => [...prev, { text: input, createdAt: new Date() }]);
     setInput(""); //clear input
   }
 
@@ -67,7 +67,7 @@ export const WorkoutCard = () => {
                   key={i}
                 >
                   <Dot className="text-gray-900 shrink-0" />{" "}
-                  <span className="truncate min-w-0">{note}</span>
+                  <span className="truncate min-w-0">{note.text}</span>
                 </p>
               ))}
             </div>
@@ -121,13 +121,16 @@ export const WorkoutCard = () => {
                 {/* <p className="flex items-center text-sm font-helvetica font-light text-gray-100 truncate z-0"> */}
                 <Dot className="text-gray-100 shrink-0" />
                 <span className="truncate min-w-0 flex-1 text-sm font-helvetica font-light text-gray-100">
-                  {note}
+                  {note.text}
                 </span>
                 {/* </p> */}
                 {isHovered === i && (
                   <CircleX
                     className="text-gray-300 cursor-pointer"
-                    onClick={() => deleteNote(i)}
+                    onClick={(e) => {
+                      e.stopPropagation(); //prevent trigering the parent div from clicking, only this circle will be clicked
+                      deleteNote(i);
+                    }}
                   />
                 )}
               </div>
@@ -142,11 +145,20 @@ export const WorkoutCard = () => {
               className="text-gray-100 cursor-pointer"
               onClick={() => setIsNoteOpen(false)}
             />
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-10 pt-8">
+              {/* note text */}
               <p className="text-gray-100 text-xl">
-                {openedNote !== null ? notes[openedNote] : ""}
+                {openedNote !== null ? notes[openedNote].text : ""}
               </p>
-              <p className="text-gray-200 text-sm">description time and all</p>
+              {/* note date */}
+              <p className="text-gray-400 text-xs">
+                {openedNote !== null
+                  ? notes[openedNote].createdAt.toLocaleString("en-In", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })
+                  : ""}
+              </p>
             </div>
           </div>
         </div>
