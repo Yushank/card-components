@@ -8,9 +8,10 @@ import {
   SquareArrowUp,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { motion } from "motion/react";
 
 export const ShortnoteCard = () => {
-  const [notes, setNotes] = useState<{ text: string; createdAt: Date }[]>([]);
+  const [notes, setNotes] = useState<{ text: string; date: number }[]>([]);
   const [input, setInput] = useState("");
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [isHovered, setIsHovered] = useState<number | null>(null);
@@ -19,7 +20,8 @@ export const ShortnoteCard = () => {
 
   function addNotes() {
     if (!input.trim()) return; //no input then return
-    setNotes((prev) => [...prev, { text: input, createdAt: new Date() }]);
+    const newNote = { text: input, date: Date.now() };
+    setNotes((prev) => [...prev, newNote]);
     setInput(""); //clear input
   }
 
@@ -60,7 +62,7 @@ export const ShortnoteCard = () => {
     <div>
       {/* Menu is not active */}
       {!isMenuActive ? (
-        <div className="flex flex-col items-center bg-gray-50 border border-black rounded-lg h-80 w-60 p-2">
+        <div className="flex flex-col items-center bg-gray-50 border border-black rounded-lg h-80 w-60 p-2 justify-between">
           {/* HEADING */}
           <div className="p-2 w-full flex justify-between">
             <p className="text-2xl font-helvetica font-medium text-gray-900">
@@ -77,23 +79,31 @@ export const ShortnoteCard = () => {
             <p className="text-sm font-helvetica font-light text-gray-400">
               recents
             </p>
-            <div className="flex flex-col gap-2 h-15 w-full overflow-hidden">
+            <div className="flex flex-col justify-around h-20 w-full overflow-hidden">
               {notes.slice(-2).map((note, i) => (
-                <p
-                  className="flex text-sm font-helvetica font-light text-gray-900"
-                  key={i}
+                <motion.div
+                  className="flex text-sm font-helvetica font-light text-gray-900 bg-white/10 backdrop-blur-xl border border-white/20 rounded-md shadow-sm h-8"
+                  key={note.date}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
                 >
                   <Dot className="text-gray-900 shrink-0" />{" "}
                   <span className="truncate min-w-0">{note.text}</span>
-                </p>
+                </motion.div>
               ))}
             </div>
           </div>
 
           {/* INPUT BOX */}
-          <div className="flex flex-col items-center border rounded-xl h-30 w-50">
+          <div className="flex flex-col items-center h-20 w-50">
             <input
-              className="border rounded-lg h-15 w-45 m-2 p-1"
+              className="border rounded-lg h-20 w-full m-2 p-1"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -102,12 +112,12 @@ export const ShortnoteCard = () => {
               }}
               placeholder="I need to do..."
             ></input>
-            <button
+            {/* <button
               className="rounded-lg w-45 h-7 bg-gray-900 text-gray-50 mt-1 border cursor-pointer"
               onClick={addNotes}
             >
               Add note
-            </button>
+            </button> */}
           </div>
         </div>
       ) : //Menu is active
@@ -170,9 +180,11 @@ export const ShortnoteCard = () => {
               {/* note date */}
               <p className="text-gray-400 text-xs">
                 {openedNote !== null
-                  ? notes[openedNote].createdAt.toLocaleString("en-In", {
-                      dateStyle: "medium",
-                      timeStyle: "short",
+                  ? new Date(notes[openedNote].date).toLocaleString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })
                   : ""}
               </p>
