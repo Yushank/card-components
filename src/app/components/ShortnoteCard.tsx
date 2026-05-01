@@ -7,7 +7,7 @@ import {
   SquareArrowDown,
   SquareArrowUp,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 export const ShortnoteCard = () => {
@@ -17,6 +17,11 @@ export const ShortnoteCard = () => {
   const [isHovered, setIsHovered] = useState<number | null>(null);
   const [isNoteOpen, setIsNoteOpen] = useState(false);
   const [openedNote, setOpenedNote] = useState<number | null>(null);
+
+  const mainRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const [radius, setRadius] = useState(0);
+  const [origin, setOrigin] = useState({ centerX: 0, centerY: 0 });
 
   function addNotes() {
     if (!input.trim()) return; //no input then return
@@ -56,6 +61,42 @@ export const ShortnoteCard = () => {
     localStorage.setItem("short-notes", JSON.stringify(notes));
   }, [notes]); //whenever changes in notes happen it saves
 
+  // clip path animation
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const calculateRadius = () => {
+      if (!mainRef.current) return;
+
+      const rect = mainRef.current.getBoundingClientRect();
+
+      const centerX = rect.width / 2;
+      const centerY = 0;
+
+      setOrigin({ centerX, centerY });
+
+      const distances = [
+        Math.hypot(centerX, centerY),
+        Math.hypot(window.innerWidth - centerX, centerY),
+        Math.hypot(centerX, window.innerHeight - centerY),
+        Math.hypot(window.innerWidth - centerX, window.innerHeight - centerY),
+      ];
+
+      return Math.max(...distances);
+    };
+
+    if (isMenuActive) {
+      const maxRadius = calculateRadius();
+      setRadius(0);
+
+      requestAnimationFrame(() => {
+        setRadius(maxRadius!);
+      });
+    } else {
+      setRadius(0);
+    }
+  }, [isMenuActive]);
+
   return (
     <div className="relative h-80 w-60">
       {/* Menu is not active */}
@@ -63,7 +104,10 @@ export const ShortnoteCard = () => {
       {!isNoteOpen ? (
         <>
           {/* MAIN NOTES SECTION */}
-          <div className="absolute flex flex-col items-center bg-gray-50 border border-black rounded-lg h-full w-full p-2 justify-between">
+          <div
+            className="absolute flex flex-col items-center bg-gray-50 border border-black rounded-lg h-full w-full p-2 justify-between"
+            ref={mainRef}
+          >
             {/* heading */}
             <div className="p-2 w-full flex justify-between">
               <p className="text-2xl font-helvetica font-medium text-gray-900">
@@ -118,7 +162,13 @@ export const ShortnoteCard = () => {
 
           {/* NOTES LIST SECTION */}
           <div
-            className={`absolute flex flex-col items-center bg-gray-900 border border-black rounded-lg h-full w-full p-2 ${isMenuActive ? "visible" : "invisible"}`}
+            ref={listRef}
+            className={`absolute flex flex-col items-center bg-gray-900 border border-black rounded-lg h-full w-full p-2 transition-all duration-500 ease-in-out ${isMenuActive ? "visible" : "invisible"}`}
+            style={{
+              backgroundColor: "#101828",
+              clipPath: `circle(${radius}px at ${origin.centerX}px ${origin.centerY}px)`,
+            }}
+            aria-hidden={!isMenuActive}
           >
             {/* heading */}
             <div className="p-2 w-full flex justify-between">
