@@ -43,12 +43,10 @@ export const ShortnoteCard = () => {
     const saved = localStorage.getItem("short-notes");
     if (saved) {
       const parsed = JSON.parse(saved);
-      const restored = parsed.map(
-        (note: { text: string; createdAt: string }) => ({
-          ...note,
-          createdAt: new Date(note.createdAt),
-        }),
-      );
+      const restored = parsed.map((note: { text: string; date: string }) => ({
+        ...note,
+        date: new Date(note.date),
+      }));
       setNotes(restored);
     }
   }, []);
@@ -59,114 +57,113 @@ export const ShortnoteCard = () => {
   }, [notes]); //whenever changes in notes happen it saves
 
   return (
-    <div>
+    <div className="relative h-80 w-60">
       {/* Menu is not active */}
-      {!isMenuActive ? (
-        <div className="flex flex-col items-center bg-gray-50 border border-black rounded-lg h-80 w-60 p-2 justify-between">
-          {/* HEADING */}
-          <div className="p-2 w-full flex justify-between">
-            <p className="text-2xl font-helvetica font-medium text-gray-900">
-              Short Notes
-            </p>
-            <SquareArrowDown
-              className="w-4 h-4 cursor-pointer"
-              onClick={dropMenu}
-            />
-          </div>
 
-          {/* RECENT NOTES */}
-          <div className="flex flex-col gap-4 p-4 w-full">
-            <p className="text-sm font-helvetica font-light text-gray-400">
-              recents
-            </p>
-            <div className="flex flex-col justify-around h-20 w-full overflow-hidden">
-              {notes.slice(-2).map((note, i) => (
-                <motion.div
-                  className="flex text-sm font-helvetica font-light text-gray-900 bg-white/10 backdrop-blur-xl border border-white/20 rounded-md shadow-sm h-8"
-                  key={note.date}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 20,
-                  }}
-                >
-                  <Dot className="text-gray-900 shrink-0" />{" "}
-                  <span className="truncate min-w-0">{note.text}</span>
-                </motion.div>
-              ))}
+      {!isNoteOpen ? (
+        <>
+          {/* MAIN NOTES SECTION */}
+          <div className="absolute flex flex-col items-center bg-gray-50 border border-black rounded-lg h-full w-full p-2 justify-between">
+            {/* heading */}
+            <div className="p-2 w-full flex justify-between">
+              <p className="text-2xl font-helvetica font-medium text-gray-900">
+                Short Notes
+              </p>
+              <SquareArrowDown
+                className="w-4 h-4 cursor-pointer"
+                onClick={dropMenu}
+              />
+            </div>
+
+            {/* recent notes */}
+            <div className="flex flex-col gap-4 p-4 w-full">
+              <p className="text-sm font-helvetica font-light text-gray-400">
+                recents
+              </p>
+              <div className="flex flex-col justify-around h-20 w-full overflow-hidden">
+                {notes.slice(-2).map((note, i) => (
+                  <motion.div
+                    className="flex text-sm font-helvetica font-light text-gray-900 bg-white/10 backdrop-blur-xl border border-white/20 rounded-md shadow-sm h-8"
+                    key={note.date}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 20,
+                    }}
+                  >
+                    <Dot className="text-gray-900 shrink-0" />{" "}
+                    <span className="truncate min-w-0">{note.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* input box */}
+            <div className="flex flex-col items-center h-20 w-50">
+              <input
+                className="border rounded-lg h-20 w-full m-2 p-1"
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") addNotes();
+                }}
+                placeholder="I need to do..."
+              ></input>
             </div>
           </div>
 
-          {/* INPUT BOX */}
-          <div className="flex flex-col items-center h-20 w-50">
-            <input
-              className="border rounded-lg h-20 w-full m-2 p-1"
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") addNotes();
-              }}
-              placeholder="I need to do..."
-            ></input>
-            {/* <button
-              className="rounded-lg w-45 h-7 bg-gray-900 text-gray-50 mt-1 border cursor-pointer"
-              onClick={addNotes}
-            >
-              Add note
-            </button> */}
-          </div>
-        </div>
-      ) : //Menu is active
-      !isNoteOpen ? (
-        //Note is not open
-        <div className="flex flex-col items-center bg-gray-900 border border-black rounded-lg h-80 w-60 p-2">
-          {/* HEADING */}
-          <div className="p-2 w-full flex justify-between">
-            <p className="text-2xl font-helvetica font-medium text-gray-50">
-              Short Notes
-            </p>
-            <SquareArrowUp
-              className="w-4 h-4 text-gray-50 cursor-pointer"
-              onClick={dropMenu}
-            />
-          </div>
+          {/* NOTES LIST SECTION */}
+          <div
+            className={`absolute flex flex-col items-center bg-gray-900 border border-black rounded-lg h-full w-full p-2 ${isMenuActive ? "visible" : "invisible"}`}
+          >
+            {/* heading */}
+            <div className="p-2 w-full flex justify-between">
+              <p className="text-2xl font-helvetica font-medium text-gray-50">
+                Short Notes
+              </p>
+              <SquareArrowUp
+                className="w-4 h-4 text-gray-50 cursor-pointer"
+                onClick={dropMenu}
+              />
+            </div>
 
-          {/* NOTES */}
-          <div className="flex flex-col overflow-x-hidden gap-4 p-4 w-full">
-            {notes.map((note, i) => (
-              <div
-                className="flex items-center relative cursor-pointer"
-                key={i}
-                onMouseEnter={() => setIsHovered(i)}
-                onMouseLeave={() => setIsHovered(null)}
-                onClick={() => openNote(i)}
-              >
-                {/* <p className="flex items-center text-sm font-helvetica font-light text-gray-100 truncate z-0"> */}
-                <Dot className="text-gray-100 shrink-0" />
-                <span className="truncate min-w-0 flex-1 text-sm font-helvetica font-light text-gray-100">
-                  {note.text}
-                </span>
-                {/* </p> */}
-                {isHovered === i && (
-                  <CircleX
-                    className="text-gray-300 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation(); //prevent trigering the parent div from clicking, only this circle will be clicked
-                      deleteNote(i);
-                    }}
-                  />
-                )}
-              </div>
-            ))}
+            {/* notes */}
+            <div className="flex flex-col overflow-x-hidden gap-4 p-4 w-full">
+              {notes.map((note, i) => (
+                <div
+                  className="flex items-center relative cursor-pointer"
+                  key={i}
+                  onMouseEnter={() => setIsHovered(i)}
+                  onMouseLeave={() => setIsHovered(null)}
+                  onClick={() => openNote(i)}
+                >
+                  {/* <p className="flex items-center text-sm font-helvetica font-light text-gray-100 truncate z-0"> */}
+                  <Dot className="text-gray-100 shrink-0" />
+                  <span className="truncate min-w-0 flex-1 text-sm font-helvetica font-light text-gray-100">
+                    {note.text}
+                  </span>
+                  {/* </p> */}
+                  {isHovered === i && (
+                    <CircleX
+                      className="text-gray-300 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation(); //prevent trigering the parent div from clicking, only this circle will be clicked
+                        deleteNote(i);
+                      }}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         //Note is open
-        <div className="flex flex-col items-center bg-gray-900 border border-black rounded-lg h-80 w-60 p-2">
+        <div className="flex flex-col items-center bg-gray-900 border border-black rounded-lg h-full w-full p-2">
           <div className="flex flex-col p-2 w-full gap-4">
             <ArrowBigLeft
               className="text-gray-100 cursor-pointer"
