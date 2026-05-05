@@ -8,7 +8,7 @@ import {
   SquareArrowUp,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 export const ShortnoteCard = () => {
   const [notes, setNotes] = useState<{ text: string; date: number }[]>([]);
@@ -163,7 +163,7 @@ export const ShortnoteCard = () => {
           {/* NOTES LIST SECTION */}
           <div
             ref={listRef}
-            className={`absolute flex flex-col items-center bg-gray-900 border border-black rounded-lg h-full w-full p-2 transition-all duration-500 ease-in-out ${isMenuActive ? "visible" : "invisible"}`}
+            className={`absolute flex flex-col items-center bg-gray-900 border border-black rounded-lg h-full w-full p-2 transition-all duration-600 ease-in-out ${isMenuActive ? "visible" : "invisible"}`}
             style={{
               backgroundColor: "#101828",
               clipPath: `circle(${radius}px at ${origin.centerX}px ${origin.centerY}px)`,
@@ -183,31 +183,47 @@ export const ShortnoteCard = () => {
 
             {/* notes */}
             <div className="flex flex-col overflow-x-hidden gap-4 p-4 w-full">
-              {notes.map((note, i) => (
-                <div
-                  className="flex items-center relative cursor-pointer"
-                  key={i}
-                  onMouseEnter={() => setIsHovered(i)}
-                  onMouseLeave={() => setIsHovered(null)}
-                  onClick={() => openNote(i)}
-                >
-                  {/* <p className="flex items-center text-sm font-helvetica font-light text-gray-100 truncate z-0"> */}
-                  <Dot className="text-gray-100 shrink-0" />
-                  <span className="truncate min-w-0 flex-1 text-sm font-helvetica font-light text-gray-100">
-                    {note.text}
-                  </span>
-                  {/* </p> */}
-                  {isHovered === i && (
-                    <CircleX
-                      className="text-gray-300 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation(); //prevent trigering the parent div from clicking, only this circle will be clicked
-                        deleteNote(i);
-                      }}
-                    />
-                  )}
-                </div>
-              ))}
+              <AnimatePresence initial={false}>
+                {notes.map((note, i) => (
+                  <motion.div
+                    className="flex items-center relative cursor-pointer bg-white/10  border border-white/20 rounded-md h-8"
+                    key={note.date}
+                    onMouseEnter={() => setIsHovered(i)}
+                    onMouseLeave={() => setIsHovered(null)}
+                    onClick={() => openNote(i)}
+                    layout
+                    whileHover={{ scale: 1.05 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{
+                      opacity: { duration: 0.2 },
+                      layout: {
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 20,
+                      },
+                      // this makes the item shifts smoothly after deletion
+                    }}
+                  >
+                    {/* <p className="flex items-center text-sm font-helvetica font-light text-gray-100 truncate z-0"> */}
+                    <Dot className="text-gray-100 shrink-0" />
+                    <span className="truncate min-w-0 flex-1 text-sm font-helvetica font-light text-gray-100">
+                      {note.text}
+                    </span>
+                    {/* </p> */}
+                    {isHovered === i && (
+                      <CircleX
+                        className="text-gray-300 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation(); //prevent trigering the parent div from clicking, only this circle will be clicked
+                          deleteNote(i);
+                        }}
+                      />
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </div>
         </>
