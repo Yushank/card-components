@@ -4,6 +4,25 @@
   --font-helvetica: "Helvetica Neue", Helvetica, sans-serif;
 }
 
+.custom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 9999px;
+  background: #00e5ff; /* track color */
+  outline: none;
+}
+
+.custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #000000; /* thumb color */
+  cursor: pointer;
+}
+
 @layer base {
   ::-webkit-scrollbar {
     width: 4px;
