@@ -9,12 +9,37 @@ export const SlidercostCard = () => {
   return (
     <div className="relative h-100 w-150">
       <div className="flex flex-col items-center justify-around border border-gray-900 rounded-lg shadow-md w-full h-full">
-        <div className="border rounded-lg shadow-sm w-60 p-10 flex justify-center items-center">
-          <p className="font-helvetica text-4xl text-shadow-black text-gray-700">
-            {value * 3}
+        <div className="flex flex-col items-center gap-4">
+          <h1 className="text-3xl font-bold font-doto text-gray-900">
+            Pay only for what you generate
+          </h1>
+          <p className="text-xs font-inter text-gray-600">
+            start with a flat monthly rate that gives you
+            <span className="text-gray-700 font-semibold pl-2">
+              4000 credits.
+            </span>
           </p>
         </div>
-        <Slider value={value} onChange={setValue} />
+        <div className="">
+          <div className="border rounded-2xl shadow-sm py-4 w-60 flex justify-center items-center">
+            <p className="font-inter font-semibold tabular-nums text-5xl text-shadow-black text-gray-700">
+              ${value * 3}
+            </p>
+          </div>
+        </div>
+        <div className=" flex flex-col gap-2">
+          <p className="text-xs text-gray-800 font-inter font-semibold">
+            This pricing scales as your generations do. No surprises - just
+            usage.
+          </p>
+          <p className="text-xs text-gray-600 font-inter">
+            Use the slider to preview your monthly cost. Custom pricing
+            available.
+          </p>
+        </div>
+        <div className="">
+          <Slider value={value} onChange={setValue} />
+        </div>
       </div>
     </div>
   );
@@ -32,11 +57,11 @@ function Slider({
   useEffect(() => {
     const bubble = bubbleRef.current;
     if (bubble) {
-      bubble.style.left = `${Number(value * 3)}px`;
+      bubble.style.left = `${Number(value * 3.8)}px`;
     }
   });
   return (
-    <div className="relative w-80 h-10 items-center">
+    <div className="relative w-100 h-10 items-center">
       <input
         className="w-full custom-slider"
         type="range"

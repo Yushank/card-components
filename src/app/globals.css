@@ -4,12 +4,20 @@
   --font-helvetica: "Helvetica Neue", Helvetica, sans-serif;
 }
 
+@theme {
+  --font-inter: var(--font-inter), sans-serif;
+}
+
+@theme {
+  --font-doto: var(--font-doto), sans-serif;
+}
+
 .custom-slider {
   -webkit-appearance: none;
   appearance: none;
   height: 10px;
   border-radius: 9999px;
-  background: #00e5ff; /* track color */
+  background: #c1c1c1; /* track color */
   outline: none;
 }
 
