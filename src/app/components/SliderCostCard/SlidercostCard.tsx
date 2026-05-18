@@ -2,6 +2,7 @@
 
 import React, { use, useEffect, useRef, useState } from "react";
 // import { Slider } from "../Slider/Slider";
+import { Slider2 } from "../Slider/Slider2";
 
 export const SlidercostCard = () => {
   const [value, setValue] = useState(1);
@@ -14,7 +15,7 @@ export const SlidercostCard = () => {
             Pay only for what you generate
           </h1>
           <p className="text-xs font-inter text-gray-600">
-            start with a flat monthly rate that gives you
+            Start with a flat monthly rate that gives you
             <span className="text-gray-700 font-semibold pl-2">
               4000 credits.
             </span>
@@ -37,8 +38,9 @@ export const SlidercostCard = () => {
             available.
           </p>
         </div>
-        <div className="">
-          <Slider value={value} onChange={setValue} />
+        <div className="w-[68%] border border-blue-500">
+          {/* <Slider value={value} onChange={setValue} /> */}
+          <Slider2 />
         </div>
       </div>
     </div>
@@ -61,17 +63,23 @@ function Slider({
     }
   });
   return (
-    <div className="relative w-100 h-10 items-center">
-      <input
-        className="w-full custom-slider"
-        type="range"
-        min="1"
-        max="100"
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-      />
-      <div ref={bubbleRef} className="absolute font-helvetica text-gray-800">
-        {value}
+    <div className="w-120 h-10">
+      <div className="relative items-center px-8">
+        <input
+          className="w-full custom-slider"
+          type="range"
+          min="1"
+          max="100"
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+        />
+        <div ref={bubbleRef} className="absolute font-helvetica text-gray-800">
+          {value}
+        </div>
+      </div>
+      <div className="flex justify-between w-full">
+        <p className="text-xs text-gray-600 font-inter">4000 credits</p>
+        <p className="text-xs text-gray-600 font-inter">25000 credits</p>
       </div>
     </div>
   );
