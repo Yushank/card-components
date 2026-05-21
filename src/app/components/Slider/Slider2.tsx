@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
 import { motion } from "motion/react";
 
-export const Slider2 = () => {
-  const [value, setValue] = useState(0);
-
-  const max = 9;
-
+interface sliderProps {
+  value: number;
+  onChange: (value: number) => void;
+  max: number;
+}
+export const Slider2 = ({ value, onChange, max }: sliderProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const progress = (value / max) * 100;
@@ -17,7 +18,7 @@ export const Slider2 = () => {
     const percent = x / rect.width; //this gives what percentage of slider the mouse is in
     const nextValue = Math.round(percent * max); //this gives round value
     const clamped = Math.max(0, Math.min(max, nextValue)); //prevent overflow
-    setValue(clamped);
+    onChange(clamped);
   };
 
   return (
