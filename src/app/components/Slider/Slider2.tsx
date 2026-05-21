@@ -10,10 +10,33 @@ export const Slider2 = () => {
 
   const progress = (value / max) * 100;
 
+  const getValueFromX = (clientX: number) => {
+    const rect = sliderRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = clientX - rect.left; //mouse point in screen above slider - slider position in screen (this gives mouse position inside slider)
+    const percent = x / rect.width; //this gives what percentage of slider the mouse is in
+    const nextValue = Math.round(percent * max); //this gives round value
+    const clamped = Math.max(0, Math.min(max, nextValue)); //prevent overflow
+    setValue(clamped);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto my-5 border border-green-500">
       {/* SLIDER CONTAINER */}
-      <div ref={sliderRef} className="relative border border-red-500">
+      <motion.div
+        ref={sliderRef}
+        className="relative border border-red-500"
+        style={{ touchAction: "none", userSelect: "none" }} //prevents scroll interference and text selection while dragging
+        onPointerDown={(e) => {
+          (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+          getValueFromX(e.clientX);
+          //this makes the whole slider container clickable and send a value which moves the thumb where it is clicked
+          //we remove onclick from each bars and do this instead
+        }}
+        onPan={(_, info) => {
+          getValueFromX(info.point.x);
+        }}
+      >
         {/* BARS */}
         <div className="flex gap-1">
           {/* creating bars */}
@@ -23,7 +46,7 @@ export const Slider2 = () => {
             return (
               <div
                 key={i}
-                onClick={() => setValue(i)}
+                // onClick={() => setValue(i)}
                 className={
                   i <= value
                     ? "flex-1 h-4 bg-blue-500"
@@ -36,18 +59,10 @@ export const Slider2 = () => {
 
         {/* THUMB */}
         <motion.div
-          className="absolute top-0 w-4 h-4 bg-white border-4 border-gray-900 rounded-full cursor-grab active:cursor-grabbing"
+          className="absolute top-0 w-4 h-4 bg-white border-4 border-gray-900 rounded-full cursor-grab active:cursor-grabbing pointer-events-none"
           // drag="x"
-          dragConstraints={sliderRef}
-          onPan={(event, info) => {
-            const rect = sliderRef.current?.getBoundingClientRect();
-            if (!rect) return;
-            const x = info.point.x - rect.left; //mouse point in screen above slider - slider position in screen (this gives mouse position inside slider)
-            const percent = x / rect.width; //this gives what percentage of slider the mouse is in
-            const nextValue = Math.round(percent * max); //this gives round value
-            const clamped = Math.max(0, Math.min(max, nextValue)); //prevent overflow
-            setValue(clamped);
-          }}
+          // dragConstraints={sliderRef}
+
           animate={{
             left: `${progress}%`,
           }}
@@ -60,7 +75,7 @@ export const Slider2 = () => {
             transform: "translateX(-50%)",
           }}
         />
-      </div>
+      </motion.div>
     </div>
   );
 };

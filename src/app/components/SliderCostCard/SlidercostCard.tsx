@@ -39,48 +39,9 @@ export const SlidercostCard = () => {
           </p>
         </div>
         <div className="w-[68%] border border-blue-500">
-          {/* <Slider value={value} onChange={setValue} /> */}
           <Slider2 />
         </div>
       </div>
     </div>
   );
 };
-
-function Slider({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (v: number) => void;
-}) {
-  const bubbleRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const bubble = bubbleRef.current;
-    if (bubble) {
-      bubble.style.left = `${Number(value * 3.8)}px`;
-    }
-  });
-  return (
-    <div className="w-120 h-10">
-      <div className="relative items-center px-8">
-        <input
-          className="w-full custom-slider"
-          type="range"
-          min="1"
-          max="100"
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-        />
-        <div ref={bubbleRef} className="absolute font-helvetica text-gray-800">
-          {value}
-        </div>
-      </div>
-      <div className="flex justify-between w-full">
-        <p className="text-xs text-gray-600 font-inter">4000 credits</p>
-        <p className="text-xs text-gray-600 font-inter">25000 credits</p>
-      </div>
-    </div>
-  );
-}
