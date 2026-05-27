@@ -22,11 +22,11 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto my-5 border border-green-500">
+    <div className="w-full max-w-md mx-auto my-5">
       {/* SLIDER CONTAINER */}
       <motion.div
         ref={sliderRef}
-        className="relative border border-red-500"
+        className="relative"
         style={{ touchAction: "none", userSelect: "none" }} //prevents scroll interference and text selection while dragging
         onPointerDown={(e) => {
           (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);

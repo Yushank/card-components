@@ -3,6 +3,8 @@
 import React, { use, useEffect, useRef, useState } from "react";
 // import { Slider } from "../Slider/Slider";
 import { Slider2 } from "../Slider/Slider2";
+import { Counter } from "../Counter/Counter";
+import { motion } from "motion/react";
 
 export const SlidercostCard = () => {
   const [value, setValue] = useState(1);
@@ -23,9 +25,9 @@ export const SlidercostCard = () => {
         </div>
         <div className="">
           <div className="border rounded-2xl shadow-sm py-4 w-60 flex justify-center items-center">
-            <p className="font-inter font-semibold tabular-nums text-5xl text-shadow-black text-gray-700">
-              ${value * 3}
-            </p>
+            <div className="flex font-inter font-semibold text-5xl text-shadow-black text-gray-700">
+              $ <Counter value={value} />
+            </div>
           </div>
         </div>
         <div className=" flex flex-col gap-2">
@@ -38,7 +40,7 @@ export const SlidercostCard = () => {
             available.
           </p>
         </div>
-        <div className="w-[68%] border border-blue-500">
+        <div className="w-[68%]">
           <Slider2 value={value} onChange={setValue} max={9} />
         </div>
       </div>
