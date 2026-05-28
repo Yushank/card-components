@@ -41,7 +41,7 @@ export const SlidercostCard = () => {
           </p>
         </div>
         <div className="w-[68%]">
-          <Slider2 value={value} onChange={setValue} max={9} />
+          <Slider2 value={value} onChange={setValue} max={30} />
         </div>
       </div>
     </div>

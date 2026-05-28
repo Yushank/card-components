@@ -41,7 +41,7 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
         {/* BARS */}
         <div className="flex gap-1">
           {/* creating bars */}
-          {Array.from({ length: 10 }).map((_, i) => {
+          {Array.from({ length: 30 }).map((_, i) => {
             // const barPct = (i / 9) * 100;
 
             return (
