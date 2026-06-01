@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import React from "react";
 
-const fontSize = 50;
+const fontSize = 40;
 const padding = 0;
 const height = fontSize + padding;
 

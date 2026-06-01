@@ -8,6 +8,36 @@ interface sliderProps {
 }
 export const Slider2 = ({ value, onChange, max }: sliderProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
+  const thumbRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const [activeLine, setActiveLine] = useState<number | null>(null);
+
+  const checkCollision = () => {
+    if (!thumbRef.current) return;
+
+    const thumbRect = thumbRef.current.getBoundingClientRect();
+
+    let foundOverlap = false;
+
+    lineRef.current.forEach((line, index) => {
+      if (!line) return;
+
+      const lineRect = line.getBoundingClientRect();
+
+      const overlap =
+        thumbRect.right >= lineRect.left && thumbRect.left <= lineRect.right;
+
+      if (overlap) {
+        setActiveLine(index);
+        foundOverlap = true;
+      }
+    });
+
+    if (!foundOverlap) {
+      setActiveLine(null);
+    }
+  };
 
   const progress = (value / max) * 100;
 
@@ -19,6 +49,7 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
     const nextValue = Math.round(percent * max); //this gives round value
     const clamped = Math.max(0, Math.min(max, nextValue)); //prevent overflow
     onChange(clamped);
+    checkCollision();
   };
 
   return (
@@ -31,6 +62,7 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
         onPointerDown={(e) => {
           (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
           getValueFromX(e.clientX);
+          checkCollision();
           //this makes the whole slider container clickable and send a value which moves the thumb where it is clicked
           //we remove onclick from each bars and do this instead
         }}
@@ -41,18 +73,25 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
         {/* BARS */}
         <div className="flex gap-1">
           {/* creating bars */}
-          {Array.from({ length: 30 }).map((_, i) => {
+          {Array.from({ length: 60 }).map((_, i) => {
             // const barPct = (i / 9) * 100;
 
             return (
-              <div
+              <motion.div
                 key={i}
+                ref={(el) => {
+                  lineRef.current[i] = el;
+                }}
                 // onClick={() => setValue(i)}
-                className={
-                  i <= value
-                    ? "flex-1 h-4 bg-blue-500"
-                    : "flex-1 h-4 bg-gray-300"
-                }
+                className={"flex-1 h-4 bg-gray-300"}
+                animate={{
+                  scaleY: activeLine === i ? 2.5 : 1,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 25,
+                }}
               />
             );
           })}
@@ -64,6 +103,7 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
           // drag="x"
           // dragConstraints={sliderRef}
 
+          ref={thumbRef}
           animate={{
             left: `${progress}%`,
           }}

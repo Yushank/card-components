@@ -5,13 +5,15 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { Slider2 } from "../Slider/Slider2";
 import { Counter } from "../Counter/Counter";
 import { motion } from "motion/react";
+import { CounterBg } from "../Svg/CounterBg";
 
 export const SlidercostCard = () => {
   const [value, setValue] = useState(1);
 
   return (
-    <div className="relative h-100 w-150">
+    <div className="relative h-110 w-150">
       <div className="flex flex-col items-center justify-around border border-gray-900 rounded-lg shadow-md w-full h-full">
+        {/* HEADER */}
         <div className="flex flex-col items-center gap-4">
           <h1 className="text-3xl font-bold font-doto text-gray-900">
             Pay only for what you generate
@@ -23,9 +25,11 @@ export const SlidercostCard = () => {
             </span>
           </p>
         </div>
-        <div className="">
-          <div className="border rounded-2xl shadow-sm py-4 w-60 flex justify-center items-center">
-            <div className="flex font-inter font-semibold text-5xl text-shadow-black text-gray-700">
+        {/* COUNTER */}
+        <div className="relative w-[50%] h-[50%] flex items-center justify-center">
+          <CounterBg className="w-70 h-40" />
+          <div className="absolute shadow-md rounded-2xl py-4 w-[65%] flex justify-center items-center bg-white">
+            <div className="flex font-inter font-semibold text-4xl text-shadow-black text-gray-700">
               $ <Counter value={value} />
             </div>
           </div>
@@ -41,7 +45,7 @@ export const SlidercostCard = () => {
           </p>
         </div>
         <div className="w-[68%]">
-          <Slider2 value={value} onChange={setValue} max={30} />
+          <Slider2 value={value} onChange={setValue} max={60} />
         </div>
       </div>
     </div>
