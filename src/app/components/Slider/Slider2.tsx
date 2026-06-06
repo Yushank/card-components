@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 interface sliderProps {
@@ -10,36 +10,74 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<(HTMLDivElement | null)[]>([]);
+  const rafRef = useRef<number | null>(null);
+  const stableCountRef = useRef(0);
+  const lastActiveRef = useRef<number | null>(null);
 
   const [activeLine, setActiveLine] = useState<number | null>(null);
 
-  const checkCollision = () => {
-    if (!thumbRef.current) return;
+  const progress = (value / max) * 100;
+
+  //take lineRef and from there take its boundingClientRect to know left and right distances
+  //then match that with thumbRef, if it sits well on top of it then return that lineRef to
+  const detectCollision = (): number | null => {
+    if (!thumbRef.current) return null;
 
     const thumbRect = thumbRef.current.getBoundingClientRect();
 
-    let foundOverlap = false;
-
-    lineRef.current.forEach((line, index) => {
-      if (!line) return;
-
+    for (let i = 0; i < lineRef.current.length; i++) {
+      const line = lineRef.current[i];
+      if (!line) continue;
       const lineRect = line.getBoundingClientRect();
-
-      const overlap =
-        thumbRect.right >= lineRect.left && thumbRect.left <= lineRect.right;
-
-      if (overlap) {
-        setActiveLine(index);
-        foundOverlap = true;
+      if (
+        thumbRect.right >= lineRect.left &&
+        thumbRect.left <= lineRect.right
+      ) {
+        return i;
       }
-    });
-
-    if (!foundOverlap) {
-      setActiveLine(null);
     }
+    return null;
   };
 
-  const progress = (value / max) * 100;
+  const startCollisionLoop = () => {
+    if (rafRef.current !== null) return; // already a loop is running
+
+    stableCountRef.current = 0; //set the loop count to 0 initally
+    lastActiveRef.current = null; //no active ref
+
+    const loop = () => {
+      const active = detectCollision();
+      setActiveLine(active); //set the active line as the line which we got from checking collision in detectCollision
+
+      if (active === lastActiveRef.current) {
+        stableCountRef.current++;
+      } else {
+        stableCountRef.current = 0;
+        lastActiveRef.current = null;
+      }
+      //if the active line is the same as last active line then keep the loop count increasing
+      //if not then make the count 0 and last active as null
+      //so that we can start count for new active line
+
+      if (stableCountRef.current < 40) {
+        rafRef.current = requestAnimationFrame(loop);
+      } else {
+        rafRef.current = null;
+      }
+      //if current loop count is still under 40 then keep the loop running
+      //else return rafRef as null to reset it
+      //why we do this? - because we check for 40ms if there is a change in active line, whether thumb has moved over new line
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+  };
+
+  //cancel any running loop on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   const getValueFromX = (clientX: number) => {
     const rect = sliderRef.current?.getBoundingClientRect();
@@ -49,7 +87,14 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
     const nextValue = Math.round(percent * max); //this gives round value
     const clamped = Math.max(0, Math.min(max, nextValue)); //prevent overflow
     onChange(clamped);
-    checkCollision();
+
+    // once we get a new value from moving thumb on the slider, clicking or sliding
+    //we cancel old active line loop and start new
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    startCollisionLoop();
   };
 
   return (
@@ -62,7 +107,6 @@ export const Slider2 = ({ value, onChange, max }: sliderProps) => {
         onPointerDown={(e) => {
           (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
           getValueFromX(e.clientX);
-          checkCollision();
           //this makes the whole slider container clickable and send a value which moves the thumb where it is clicked
           //we remove onclick from each bars and do this instead
         }}
