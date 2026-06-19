@@ -1,15 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion, useMotionValue, useTransform } from "motion/react";
+import React, { useState } from "react";
 
 export const HoverCard = () => {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const rotateZ = useTransform(x, [-1, 1], [-20, 20]);
-  const rotateY = useTransform(x, [-1, 1], [-30, 30]);
-  const rotateX = useTransform(y, [-1, 1], [-60, 60]);
+  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+  const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
 
   const handleMouseMovement = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -17,40 +12,45 @@ export const HoverCard = () => {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
-    //mouse position inside event div
-    const mouseX = (event.clientX - centerX) / (rect.width / 2);
-    const mouseY = (event.clientY - centerY) / (rect.height / 2);
+    //rotaion according to mouse position inside event div
+    //in a range of -1 to 1
+    const deltaX = (event.clientX - centerX) / (rect.width / 2);
+    const deltaY = (event.clientY - centerY) / (rect.height / 2);
 
-    x.set(mouseX);
-    y.set(mouseY);
+    setRotation({
+      z: deltaX * -20,
+      y: deltaX * 30,
+      x: deltaY * 60,
+    });
+
+    setMouseCoords({
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    });
   };
 
   const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  const customTransformTemplate = ({ rotateX, rotateY, rotateZ }: any) => {
-    return `rotate(${rotateZ}) rotateY(${rotateY}) rotateX(${rotateY})`;
+    setRotation({
+      x: 0,
+      y: 0,
+      z: 0,
+    });
   };
 
   return (
     <div
       onMouseMove={handleMouseMovement}
       onMouseLeave={handleMouseLeave}
-      className="w-120 h-150 flex items-center justify-center border border-red-500 rounded-xl bg-[repeating-linear-gradient(315deg,#ef4444_0,#ef4444_1px,transparent_1px,transparent_50%)] bg-size-[10px_10px]"
+      className="w-120 h-120 flex items-center justify-center border border-red-500 rounded-xl bg-[repeating-linear-gradient(315deg,#ef4444_0,#ef4444_1px,transparent_1px,transparent_50%)] bg-size-[10px_10px]"
       style={{ perspective: "1000px" }}
     >
-      <motion.div
+      <div
         className="w-60 h-80 rounded-xl border-2 border-blue-500 bg-gray-50"
         style={{
-          rotateX,
-          rotateY,
-          rotateZ,
+          transform: `rotateZ(${rotation.z}deg) rotateY(${rotation.y}deg) rotateX(${rotation.x}deg)`,
           transformStyle: "preserve-3d",
         }}
-        transformTemplate={customTransformTemplate}
-      ></motion.div>
+      ></div>
     </div>
   );
 };
