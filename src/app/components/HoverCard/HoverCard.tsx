@@ -5,6 +5,8 @@ import React, { useState } from "react";
 export const HoverCard = () => {
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
+  const [circleMove, setCircleMove] = useState({ x: 0, y: 0 });
+  const [circleScale, setCircleScale] = useState({ x: 0, y: 0 });
 
   const handleMouseMovement = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -27,6 +29,16 @@ export const HoverCard = () => {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
     });
+
+    setCircleMove({
+      x: deltaX * -20,
+      y: deltaY * 20,
+    });
+
+    setCircleScale({
+      x: 1,
+      y: 1,
+    });
   };
 
   const handleMouseLeave = () => {
@@ -34,6 +46,16 @@ export const HoverCard = () => {
       x: 0,
       y: 0,
       z: 0,
+    });
+
+    setCircleMove({
+      x: 0,
+      y: 0,
+    });
+
+    setCircleScale({
+      x: 0,
+      y: 0,
     });
   };
 
@@ -45,12 +67,27 @@ export const HoverCard = () => {
       style={{ perspective: "1000px" }}
     >
       <div
-        className="w-60 h-80 rounded-xl border-2 border-blue-500 bg-gray-50"
+        className="relative w-60 h-80 rounded-xl border-2 border-blue-500 bg-gray-50"
         style={{
           transform: `rotateZ(${rotation.z}deg) rotateY(${rotation.y}deg) rotateX(${rotation.x}deg)`,
-          transformStyle: "preserve-3d",
         }}
-      ></div>
+      >
+        <div className="absolute top-10 left-29.5 w-30 h-60 border border-blue-500 rounded-l-full overflow-hidden">
+          <div
+            className=" w-60 h-60 border border-blue-500 rounded-full"
+            style={{
+              transform: `translateX(${circleMove.x}px) translateY(${circleMove.y}px) scaleX(${circleScale.x - 0.05}) scaleY(${circleScale.x - 0.05})`,
+            }}
+          >
+            <div
+              className=" w-60 h-60 border border-blue-500 rounded-full"
+              style={{
+                transform: `translateX(${circleMove.x}px) translateY(${circleMove.y}px) scaleX(${circleScale.x - 0.1}) scaleY(${circleScale.x - 0.1})`,
+              }}
+            ></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
