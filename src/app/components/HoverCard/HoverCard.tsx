@@ -72,41 +72,42 @@ export const HoverCard = () => {
           transform: `rotateZ(${rotation.z}deg) rotateY(${rotation.y}deg) rotateX(${rotation.x}deg)`,
         }}
       >
+        {/* Mask Container */}
         <div className="absolute top-10 left-29.5 w-30 h-60 border border-blue-500 rounded-l-full overflow-hidden">
           <div
-            className=" w-60 h-60 border border-blue-500 rounded-full"
+            className="absolute top-0 left-0 w-60 h-60 border border-blue-500 rounded-full"
             style={{
-              transform: `translateX(${circleMove.x * 1.2}px) translateY(${circleMove.y * 1.2}px) `,
+              transform: `translate(${circleMove.x * 1.2}px, ${circleMove.y * 1.2}px)`,
             }}
-          >
-            <div
-              className=" w-60 h-60 border border-blue-500 rounded-full"
-              style={{
-                transform: `translateX(${circleMove.x * 1.4}px) translateY(${circleMove.y * 1.4}px) `,
-              }}
-            >
-              <div
-                className=" w-60 h-60 border border-blue-500 rounded-full"
-                style={{
-                  transform: `translateX(${circleMove.x * 1.6}px) translateY(${circleMove.y * 1.6}px) `,
-                }}
-              >
-                <div
-                  className=" w-60 h-60 border border-blue-500 rounded-full"
-                  style={{
-                    transform: `translateX(${circleMove.x * 1.8}px) translateY(${circleMove.y * 1.8}px) `,
-                  }}
-                >
-                  <div
-                    className=" w-60 h-60 border border-blue-500 rounded-full bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] "
-                    style={{
-                      transform: `translateX(${circleMove.x * 2}px) translateY(${circleMove.y * 2}px) `,
-                    }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          />
+
+          <div
+            className="absolute top-0 left-0 w-60 h-60 border border-blue-500 rounded-full"
+            style={{
+              transform: `translate(${circleMove.x * 2.6}px, ${circleMove.y * 2.6}px)`,
+            }}
+          />
+
+          <div
+            className="absolute top-0 left-0 w-60 h-60 border border-blue-500 rounded-full"
+            style={{
+              transform: `translate(${circleMove.x * 4.2}px, ${circleMove.y * 4.2}px)`,
+            }}
+          />
+
+          <div
+            className="absolute top-0 left-0 w-60 h-60 border border-blue-500 rounded-full"
+            style={{
+              transform: `translate(${circleMove.x * 6.0}px, ${circleMove.y * 6.0}px)`,
+            }}
+          />
+
+          <div
+            className="absolute top-0 left-0 w-60 h-60 border border-blue-500 rounded-full bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px]"
+            style={{
+              transform: `translate(${circleMove.x * 8.0}px, ${circleMove.y * 8.0}px)`,
+            }}
+          />
         </div>
       </div>
     </div>
