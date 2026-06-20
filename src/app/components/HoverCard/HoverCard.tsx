@@ -6,7 +6,7 @@ export const HoverCard = () => {
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [circleMove, setCircleMove] = useState({ x: 0, y: 0 });
-  const [circleScale, setCircleScale] = useState({ x: 0, y: 0 });
+  // const [circleScale, setCircleScale] = useState({ x: 0, y: 0 });
 
   const handleMouseMovement = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -35,10 +35,10 @@ export const HoverCard = () => {
       y: deltaY * 20,
     });
 
-    setCircleScale({
-      x: 1,
-      y: 1,
-    });
+    // setCircleScale({
+    //   x: 1,
+    //   y: 1,
+    // });
   };
 
   const handleMouseLeave = () => {
@@ -53,10 +53,10 @@ export const HoverCard = () => {
       y: 0,
     });
 
-    setCircleScale({
-      x: 0,
-      y: 0,
-    });
+    // setCircleScale({
+    //   x: 0,
+    //   y: 0,
+    // });
   };
 
   return (
@@ -76,15 +76,36 @@ export const HoverCard = () => {
           <div
             className=" w-60 h-60 border border-blue-500 rounded-full"
             style={{
-              transform: `translateX(${circleMove.x}px) translateY(${circleMove.y}px) scaleX(${circleScale.x - 0.05}) scaleY(${circleScale.x - 0.05})`,
+              transform: `translateX(${circleMove.x * 1.2}px) translateY(${circleMove.y * 1.2}px) `,
             }}
           >
             <div
               className=" w-60 h-60 border border-blue-500 rounded-full"
               style={{
-                transform: `translateX(${circleMove.x}px) translateY(${circleMove.y}px) scaleX(${circleScale.x - 0.1}) scaleY(${circleScale.x - 0.1})`,
+                transform: `translateX(${circleMove.x * 1.4}px) translateY(${circleMove.y * 1.4}px) `,
               }}
-            ></div>
+            >
+              <div
+                className=" w-60 h-60 border border-blue-500 rounded-full"
+                style={{
+                  transform: `translateX(${circleMove.x * 1.6}px) translateY(${circleMove.y * 1.6}px) `,
+                }}
+              >
+                <div
+                  className=" w-60 h-60 border border-blue-500 rounded-full"
+                  style={{
+                    transform: `translateX(${circleMove.x * 1.8}px) translateY(${circleMove.y * 1.8}px) `,
+                  }}
+                >
+                  <div
+                    className=" w-60 h-60 border border-blue-500 rounded-full bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] "
+                    style={{
+                      transform: `translateX(${circleMove.x * 2}px) translateY(${circleMove.y * 2}px) `,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
